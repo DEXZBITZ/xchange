@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="csrf-token" content="CswKwFeY3KNgfhACugQL8UG0Ufg6GosK8YRRSEXm">
+<title>Exchange | dexzbitz</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dexzbitz.live/common/images/favicon-32x32.png">
+<link rel="stylesheet" href="https://dexzbitz.live/css/app.css">
+<link rel="stylesheet" href="https://dexzbitz.live/common/vendors/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://dexzbitz.live/common/vendors/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://dexzbitz.live/backend/assets/css/admin_lte.css">
+<link rel="stylesheet" href="https://dexzbitz.live/backend/assets/css/template_color.css">
+
+<link rel="stylesheet" href="https://dexzbitz.live/common/vendors/iCheck/all.css">
+
+<link rel="stylesheet" href="https://dexzbitz.live/common/vendors/datepicker/datepicker.css">
+<link rel="stylesheet" href="https://dexzbitz.live/common/vendors/datatable_responsive/datatables/plugins/bootstrap/datatables.bootstrap.css">
+<link rel="stylesheet" href="https://dexzbitz.live/common/vendors/datatable_responsive/datatables/datatables.min.css">
+<link rel="stylesheet" href="https://dexzbitz.live/backend/assets/style.css">
+<link rel="stylesheet" href="https://dexzbitz.live/common/vendors/mCustomScrollbar/jquery.mCustomScrollbar.min.css">
+<style>
+        #stock_market_table tbody tr:hover, #buy_order_table tbody tr:hover, #sell_order_table tbody tr:hover {
+            cursor: pointer;
+        }
+
+        .no-clicke-header {
+            pointer-events: none;
+        }
+
+        .exchange-loader {
+            background: url(https://dexzbitz.live/common/images/progress-bar.gif) no-repeat center;
+            background-size: 150px;
+        }
+
+        .filter {
+            display: inline-block;
+        }
+
+        .exchange-table {
+            font-size: 12px;
+        }
+
+        table.exchange-table {
+            width: 100% !important;
+        }
+
+        table.exchange-table tr th, table.exchange-table tr td {
+            /*text-align: right !important;*/
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        table.exchange-table tr th::after {
+            font-size: 10px;
+            right: 5px !important;
+            bottom: 10px !important;
+        }
+
+        table.exchange-table tbody tr td {
+            padding: 3px 5px;
+        }
+
+        table.exchange-table tbody tr.selected td {
+            background: #cfffcf;
+        }
+
+        table.exchange-table tbody tr:first-child td {
+            border-top: none !important;
+        }
+
+        table.exchange-table tr th {
+            /*text-align: center !important;*/
+            padding-right: 18px !important;
+        }
+
+
+        .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+            border: none;
+            overflow: hidden !important;
+        }
+
+        .dataTables_scrollHeadInner {
+            width: 100% !important;
+        }
+
+        .mCSB_scrollTools {
+            right: -5px;
+        }
+
+        .mCS-dark-thick.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+            background: #b7deed;
+            background: -moz-linear-gradient(left, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+            background: -webkit-linear-gradient(left, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+            background: linear-gradient(to right, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+
+        }
+
+        .mCS-dark-thick.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar {
+            background: #b7deed;
+            background: -moz-linear-gradient(left, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+            background: -webkit-linear-gradient(left, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+            background: linear-gradient(to right, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+        }
+
+        .mCS-dark-thick.mCSB_scrollTools .mCSB_draggerRail {
+            background-color: #efefef;
+        }
+
+        .mCS-dark-thick.mCSB_scrollTools .mCSB_dragger.mCSB_dragger_onDrag .mCSB_dragger_bar, .mCS-dark-thin.mCSB_scrollTools .mCSB_dragger:active .mCSB_dragger_bar {
+            background: #b7deed;
+            background: -moz-linear-gradient(left, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+            background: -webkit-linear-gradient(left, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+            background: linear-gradient(to right, #b7deed 0%, #71ceef 50%, #21b4e2 51%, #b7deed 100%);
+        }
+
+
+        .mCSB_inside > .mCSB_container {
+            margin-right: 10px;
+        }
+
+        .filter {
+            width: 110px;
+            position: relative;
+        }
+
+        .filter::after {
+            content: '\f103';
+            width: 25px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-family: "FontAwesome";
+            text-align: center;
+            padding-top: 7px;
+            color: #999;
+        }
+
+        #datatable-filter:focus {
+            border: 1px solid #d2d6de;
+            outline: none !important;
+        }
+
+
+        div.dataTables_wrapper div.dataTables_filter input {
+            height: 34px;
+        }
+
+        #datatable-filter {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            padding-right: 20px;
+
+            position: relative;
+
+            z-index: 99999999;
+
+            background: none;
+
+            color: rgba(0, 0, 0, 0);
+            text-shadow: 0 0 0 #999;
+        }
+
+        #datatable-filter::-ms-expand {
+            display: none;
+        }
+
+        @media  all and (max-width: 420px) {
+            .hide_in_mobile_small {
+                display: none !important;
+            }
+        }
+
+
+        @media  all and (max-width: 512px) {
+
+            .hide_in_mobile {
+                display: none !important;
+            }
+
+
+            table.exchange-table tr td {
+                font-size: 10px;
+                padding: 3px;
+            }
+
+            .full-in-small {
+                width: auto;
+                margin-right: -15px;
+                margin-left: -15px;
+            }
+
+            .full-in-small > div {
+                padding-left: 8px !important;
+                padding-right: 10px !important;
+            }
+
+            table.exchange-table.dataTable > tbody > tr.child > td {
+                padding: 3px !important;
+            }
+        }
+
+        @keyframes  fadeGreen {
+            from {
+                background: rgba(0, 210, 0, 1);
+            }
+
+            to {
+                background: rgba(0, 210, 0, 0);
+            }
+        }
+
+        @keyframes  fadeRed {
+            from {
+                background: rgba(210, 0, 0, 1);
+            }
+
+            to {
+                background: rgba(210, 0, 0, 0);
+            }
+        }
+
+        @keyframes  fadeYellow {
+            from {
+                background: rgba(210, 210, 0, 1);
+            }
+
+            to {
+                background: rgba(210, 210, 0, 0);
+            }
+        }
+
+        .deleted {
+            animation-name: fadeRed;
+            animation-duration: 1s;
+            animation-fill-mode: both;
+        }
+
+        .updated {
+            animation-name: fadeYellow;
+            animation-duration: 1s;
+            animation-fill-mode: both;
+        }
+
+        .inserted {
+            animation-name: fadeGreen;
+            animation-duration: 1s;
+            animation-fill-mode: both;
+        }
+
+        #candlestick_zoom li.disabled a, #candlestick li.disabled a {
+            background: #fdb;
+        }
+
+        #fixed-stock-market {
+            transition: all 0.3s linear;
+        }
+
+        #fixed-stock-market i {
+            display: none;
+        }
+
+        #fixed-stock-market.opened i {
+            display: inline-block;
+        }
+
+        #fixed-stock-market.opened span {
+            display: none;
+        }
+
+        #fixed-stock-market.opened {
+            left: 0;
+        }
+
+        #fixed-stock-market-toggler.opened {
+            left: 293px;
+            transform: translateX(-100%);
+        }
+
+        #fixed-stock-market > div {
+            background: #fff;
+            height: 100%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #fixed-stock-market-toggler:hover {
+            background: #f3b60e !important;
+        }
+
+        #fixed-stock-market-toggler {
+            background: #f39c12 !important;
+            border-color: #f39c12 !important;
+            position: absolute;
+            top: 10px;
+            left: 300px;
+            transform: translateX(0);
+            transition: all 0.3s linear;
+            z-index: 3;
+        }
+
+        #fixed-stock-market .box-body {
+            padding-left: 7px;
+            padding-right: 7px;
+        }
+
+        #fixed-stock-market {
+            position: absolute;
+            top: 0;
+            left: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            margin: 0;
+            z-index: 3;
+            padding-top: 50px;
+        }
+        .main-header {
+            z-index: 4;
+        }
+
+        /*@media  all and (max-width: 767px) {
+            #fixed-stock-market {
+                padding-top: 100px;
+            }
+        }*/
+
+        @media  all and (max-width: 640px) {
+            #fixed-stock-market .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter {
+                float: right;
+            }
+        }
+
+        @media  all and (min-width: 1200px) {
+            .summary-padding-fixer {
+                padding-left: 50px;
+            }
+        }
+    </style>
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160687302-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-160687302-1');
+</script>
+</head><body class="skin-blue layout-top-nav">
+<div class="wrapper" id="app">
+<header class="main-header">
+<nav class="navbar navbar-static-top">
+<div class="container-fluid">
+<div class="navbar-header">
+<a href="https://dexzbitz.live/exchange" class="navbar-brand"><img style="width: 40px;height: 40px; margin-top: -10px" src="https://dexzbitz.live/storage/images/20ed964ad53bc1a787b0216caafbc498.png"></a>
+<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+<i class="fa fa-bars"></i>
+</button>
+</div>
+<div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+<ul class="nav navbar-nav">
+<li class="active"><a href="https://dexzbitz.live/exchange">Exchange</a></li>
+</ul>
+</div>
+<div class="navbar-custom-menu">
+<ul class="nav navbar-nav">
+</ul>
+</div>
+</div>
+</nav>
+</header>
+
+<div class="content-wrapper">
+
+<section class="content">
+<div class="box box-solid box-primary">
+<div class="row">
+<div class="col-md-12">
+<div class="box box-borderless full-in-small">
+<div class="box-header" style="padding-bottom: 5px;border-bottom:1px solid #efefef">
+<div class="summary-padding-fixer">
+<div class="row dc-clear">
+<div class="col-md-4 col-sm-6 col-lg-2 text-center">
+<h3 class="box-title text-uppercase"><span class="stock_item"></span> Exchange
+</h3>
+<div>
+<small class="text-bold cm-ml-10 text-green text-left">
+<span class="stock_item"></span>/
+<span class="base_item"></span>
+</small>
+</div>
+</div>
+<div class="col-md-4 col-sm-6 col-lg-2 exchange-table">
+<div class="text-center border-right">
+<span class="description-text">Last Price: </span><br>
+<strong><span id="last_price" class="description-header"></span></strong>
+</div>
+</div>
+<div class="col-md-4 col-sm-6 col-lg-2 exchange-table">
+<div class="text-center border-right">
+<span class="description-text">24hr Change: </span><br>
+<strong><span id="_24_hour_percentage" class="description-header description-percentage"><i class="fa fa-caret-up"></i>0%</span></strong>
+</div>
+</div>
+<div class="col-md-4 col-sm-6 col-lg-2 exchange-table">
+<div class="text-center border-right">
+<span class="description-text">24hr High: </span><br>
+<strong><span id="_24_hour_high" class="description-header"></span></strong>
+</div>
+</div>
+<div class="col-md-4 col-sm-6 col-lg-2 exchange-table">
+<div class="text-center border-right">
+<span class="description-text">24hr Low: </span><br>
+<strong><span id="_24_hour_low" class="description-header"></span></strong>
+</div>
+</div>
+<div class="col-md-4 col-sm-6 col-lg-2 text-center exchange-table">
+<span class="description-text" style="margin: 0">
+24hr Volume:
+</span><br>
+<span id="_24_hour_item_volume" class="strong"></span>
+<span class="stock_item"></span>/
+<span id="_24_hour_base_volume" class="strong"></span>
+<span class="base_item"></span>
+</div>
+</div>
+</div> </div>
+<div class="box-body" style="padding-top: 10px">
+<div class="row">
+<div class="col-md-12">
+<div class="exchange-loader" id="echart" style="width:100%; height: 550px;"></div>
+</div>
+</div>
+<div class="row">
+<div class="col-md-6 text-center">
+<ul id="candlestick_zoom" class="pagination pagination-sm">
+<li class="active"><span>Zoom</span></li>
+<li class=""><a data-zoom="360" href="javascript:">6h</a></li>
+<li class=""><a data-zoom="1440" href="javascript:">1D</a></li>
+<li class=""><a data-zoom="2880" href="javascript:">2D</a></li>
+<li class=""><a data-zoom="5760" href="javascript:">4D</a></li>
+<li class=""><a data-zoom="10080" href="javascript:">1W</a></li>
+<li class="disabled"><a data-zoom="20160" href="javascript:">2W</a></li>
+<li class=""><a data-zoom="43200" href="javascript:">1M</a></li>
+<li class=""><a data-zoom="0" href="javascript:">All</a></li>
+</ul>
+</div>
+<div class="col-md-6 text-center">
+<ul id="candlestick" class="pagination pagination-sm">
+<li class="active"><span>Candlesticks</span></li>
+<li class=""><a data-interval="5" href="javascript:">5M</a></li>
+<li class=""><a data-interval="15" href="javascript:">15M</a></li>
+<li class=""><a data-interval="30" href="javascript:">30M</a></li>
+<li class=""><a data-interval="120" href="javascript:">2H</a></li>
+<li class="disabled"><a data-interval="240" href="javascript:">4H</a></li>
+<li class=""><a data-interval="1440" href="javascript:">1D</a></li>
+</ul>
+</div>
+</div> </div>
+</div>
+</div>
+</div>
+</div>
+<div id="fixed-stock-market">
+<div>
+<div class="box box-borderless">
+<button id="fixed-stock-market-toggler" class="btn btn-primary"><i class="fa fa-bars"></i> <span class="stock_item"></span><span>/</span><span class="base_item"></span></button>
+<div class="box-header">
+<h3 class="box-title text-uppercase">Markets</h3>
+</div>
+<div class="box-body" id="stock-market-section">
+<table id="stock_market_table" class="table table-hover table-responsive small exchange-table">
+<thead>
+<tr>
+<th>Coin</th>
+<th>PRICE</th>
+<th>VOLUME</th>
+<th>CHANGE</th>
+</tr>
+</thead>
+</table>
+</div>
+</div>
+</div>
+</div><div class="box box-solid box-primary">
+<div class="row">
+<div class="col-md-4">
+<div class="box box-solid box-primary">
+<div class="box box-borderless full-in-small">
+<div class="box-header with-border">
+<h3 class="box-title text-uppercase">Buy <span class="stock_item"></span></h3>
+</div>
+<div class="box-body">
+<form method="post" action="https://dexzbitz.live/orders" id="buy_order_form" class="form-horizontal show-form-data" data-ajax-submission="y" data-reset-on-success="y">
+<input type="hidden" name="_token" value="CswKwFeY3KNgfhACugQL8UG0Ufg6GosK8YRRSEXm"> <input type="hidden" value="fba" name="base_key">
+<input type="hidden" value="1" name="fake_205">
+<input type="hidden" value="1" name="fake_204">
+<input type="hidden" value="16" name="fake_203" class="stock-pair">
+<div class="form-group">
+<label for="price" class="col-xs-4 control-label">Price</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right price" name="fake_206">
+<span class="input-group-addon text-uppercase">
+<span class="base_item"></span>
+</span>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label for="amount" class="col-xs-4 control-label">Amount</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right amount" name="fake_207">
+<span class="input-group-addon text-uppercase">
+<span class="stock_item"></span>
+</span>
+</div>
+</div>
+</div>
+<hr class="margin-top-none margin-b-10">
+<div class="form-group">
+<label for="total" class="col-xs-4 control-label">Total</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right total">
+<span class="input-group-addon text-uppercase">
+<span class="base_item"></span>
+</span>
+</div>
+</div>
+</div>
+<div style="margin-top: 30px">
+Fee: 0.1/0.2%
+</div>
+<hr class="margin-t-10 margin-b-10">
+<a href="https://dexzbitz.live/login">import wallet</a> or <a href="https://dexzbitz.live/register">create wallet</a> to trade
+</form>
+</div>
+</div>
+</div> </div>
+<div class="col-md-4">
+<div class="box box-borderless full-in-small">
+<div class="box-header with-border">
+<h3 class="box-title text-uppercase">Stop Limit</h3>
+</div>
+<div class="box-body">
+<form method="post" action="https://dexzbitz.live/orders" id="stop_limit_form" class="form-horizontal show-form-data" data-ajax-submission="y" data-reset-on-success="y">
+<input type="hidden" name="_token" value="CswKwFeY3KNgfhACugQL8UG0Ufg6GosK8YRRSEXm"> <input type="hidden" value="fba" name="base_key">
+<input type="hidden" value="1" name="fake_204">
+<input type="hidden" value="16" name="fake_203" class="stock-pair">
+<div class="form-group">
+<label for="price" class="col-xs-4 control-label">Stop</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right" id="stop_limit" name="fake_210">
+<span class="input-group-addon text-uppercase">
+<span class="base_item"></span>
+</span>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label for="price" class="col-xs-4 control-label">Price</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right price" name="fake_206">
+<span class="input-group-addon text-uppercase">
+<span class="base_item"></span>
+</span>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label for="amount" class="col-xs-4 control-label">Amount</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right amount" name="fake_207">
+<span class="input-group-addon text-uppercase">
+<span class="stock_item"></span>
+</span>
+</div>
+</div>
+</div>
+<hr class="margin-top-none margin-b-10">
+<div class="form-group">
+<label for="total" class="col-xs-4 control-label">Total</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right total">
+<span class="input-group-addon text-uppercase">
+<span class="base_item"></span>
+</span>
+</div>
+</div>
+</div>
+<hr class="margin-t-10 margin-b-10">
+<a href="https://dexzbitz.live/login">import wallet</a> or <a href="https://dexzbitz.live/register">create wallet</a> to trade
+</form>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="box box-solid box-primary">
+<div class="box box-borderless full-in-small">
+<div class="box-header with-border">
+<h3 class="box-title text-uppercase">SELL <span class="stock_item"></span></h3>
+</div>
+<div class="box-body">
+<form method="post" action="https://dexzbitz.live/orders" id="sell_order_form" class="form-horizontal show-form-data" data-ajax-submission="y" data-reset-on-success="y">
+<input type="hidden" name="_token" value="CswKwFeY3KNgfhACugQL8UG0Ufg6GosK8YRRSEXm"> <input type="hidden" value="fba" name="base_key">
+<input type="hidden" value="2" name="fake_205">
+<input type="hidden" value="1" name="fake_204">
+<input type="hidden" value="16" name="fake_203" class="stock-pair">
+<div class="form-group">
+<label for="price" class="col-xs-4 control-label">Price</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right price" name="fake_206">
+<span class="input-group-addon text-uppercase">
+<span class="base_item"></span>
+</span>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label for="amount" class="col-xs-4 control-label">Amount</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right amount" name="fake_207">
+<span class="input-group-addon text-uppercase">
+<span class="stock_item"></span>
+</span>
+</div>
+</div>
+</div>
+<hr class="margin-top-none margin-b-10">
+<div class="form-group">
+<label for="total" class="col-xs-4 control-label">Total</label>
+<div class="col-md-8">
+<div class="input-group input-group-sm">
+<input type="text" class="form-control text-right total">
+<span class="input-group-addon text-uppercase">
+<span class="base_item"></span>
+</span>
+</div>
+</div>
+</div>
+<div style="margin-top: 30px">
+Fee: 0.1/0.2%
+</div>
+<hr class="margin-t-10 margin-b-10">
+<a href="https://dexzbitz.live/login">import wallet</a> or <a href="https://dexzbitz.live/register">create wallet</a> to trade
+</form>
+</div>
+</div>
+</div> </div>
+</div>
+</div>
+<div class="row">
+<div class="col-md-6">
+<div class="box box-solid box-primary">
+<div class="box box-borderless full-in-small">
+<div class="box-header">
+<h3 class="box-title text-uppercase">Sell Orders</h3>
+<div class="pull-right text-bold">Total:
+<span id="total_sell_order_in_item"></span>
+<span class="stock_item"></span>
+</div>
+</div>
+<div class="box-body pt-0" style="height: 465px">
+<table id="sell_order_table" class="table table-hover table-striped table-responsive small exchange-table">
+<thead class="no-clicke-header">
+<tr>
+<th>PRICE</th>
+<th><span class="stock_item"></span></th>
+<th><span class="base_item"></span></th>
+<th class="hide_in_mobile_small">SUM(<span class="base_item"></span>)</th>
+</tr>
+</thead>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="box box-solid box-primary">
+<div class="box box-borderless full-in-small">
+<div class="box-header">
+<h3 class="box-title text-uppercase">Buy Orders</h3>
+<div class="pull-right text-bold">Total:
+<span id="total_buy_order_in_base"></span>
+<span class="base_item"></span>
+</div>
+</div>
+<div class="box-body pt-0" style="height: 465px">
+<table id="buy_order_table" class="table table-hover table-striped table-responsive small exchange-table">
+<thead class="no-clicke-header">
+<tr>
+<th>PRICE</th>
+<th><span class="stock_item"></span></th>
+<th><span class="base_item"></span></th>
+<th class="hide_in_mobile_small">SUM(<span class="base_item"></span>)</th>
+</tr>
+</thead>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-md-12">
+<div class="nav-tabs-custom full-in-small" style="cursor: move;">
+<ul class="nav nav-tabs ui-sortable-handle">
+<li class="active">
+<a href="#market_trade" data-toggle="tab" aria-expanded="false">MARKET TRADES</a>
+</li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane active" id="market_trade">
+<table id="trade_history_table" class="table table-hover table-responsive small exchange-table" style="width:100%">
+<thead>
+<tr>
+<th class="hide_in_mobile">DATE</th>
+<th>TYPE</th>
+<th class="text-center">PRICE</th>
+<th class="text-center">AMOUNT</th>
+<th class="text-center hide_in_mobile_small">TOTAL</th>
+</tr>
+</thead>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+</div>
+
+<footer class="main-footer">
+Copyright &copy; 2019-2020 <a href="https://dexzbitz.live">DEXZBITZ</a>. All rights reserved.
+<a target="_blank" rel="noopener nofollow" href="https://twitter.com/dexzbitz" class="footer__link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="21" viewBox="0 0 24 21" class="footer__logo"><g><path d="M24,2.49a9.31,9.31,0,0,1-2.84.84,5.25,5.25,0,0,0,2.16-3A9.5,9.5,0,0,1,20.2,1.62,4.76,4.76,0,0,0,16.62,0a5.14,5.14,0,0,0-4.94,5.3,6.24,6.24,0,0,0,.14,1.21A13.67,13.67,0,0,1,1.67,1,5.43,5.43,0,0,0,1,3.63,5.39,5.39,0,0,0,3.2,8,4.67,4.67,0,0,1,1,7.38V7.5a5.22,5.22,0,0,0,4,5.15,4.63,4.63,0,0,1-2.22.09,5,5,0,0,0,4.6,3.69,9.43,9.43,0,0,1-6.13,2.26,11.41,11.41,0,0,1-1.17,0A13.2,13.2,0,0,0,7.5,21c9,0,14-8.08,14-15.09V5.22A10.62,10.62,0,0,0,24,2.49Z" stroke="none"></path></g></svg>
+<a target="_blank" rel="noopener nofollow" href="https://www.linkedin.com/" class="footer__link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="footer__logo"><g><path d="M22.2,0H1.74A1.74,1.74,0,0,0,0,1.71V22.27A1.73,1.73,0,0,0,1.72,24H22.2A1.74,1.74,0,0,0,24,22.29V1.73A1.74,1.74,0,0,0,22.21,0h0M3.67,9.29H7.26V20.08H3.67Zm1.8-1.5h0a1.88,1.88,0,0,1-.33-3.74h.33a1.88,1.88,0,1,1,.34,3.74H5.47M20.22,20.07h-3.6V14.31c0-1.5-.51-2.44-1.82-2.44A1.94,1.94,0,0,0,13,13.17a2.67,2.67,0,0,0-.12.88v6H9.25V9.26h3.59v1.5A3.58,3.58,0,0,1,16.08,9c2.37,0,4.14,1.5,4.14,4.86Z" transform="translate(.03)" stroke="none"></path></g></svg>
+<a target="_blank" rel="noopener nofollow" href="https://www.reddit.com/" class="footer__link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="footer__logo"><g><g stroke="none"><circle cx="9.21" cy="13.2" r="1.2"></circle><path d="M14.51 16.07A4 4 0 0 1 12 16.8a3.9 3.9 0 0 1 -2.49 -.75A.34 .34 0 1 0 9 16.5a4.62 4.62 0 0 0 3 .93 4.62 4.62 0 0 0 3 -.93 .34 .34 0 1 0 -.47 -.48"></path><path d="M12,0A12,12,0,1,0,24,12,12,12,0,0,0,12,0Zm7,13.59a4.68,4.68,0,0,1,0,.53c0,2.68-3.14,4.87-7,4.87s-7-2.17-7-4.86a4.68,4.68,0,0,1,0-.53,1.64,1.64,0,0,1-.54-.32,1.75,1.75,0,0,1,2.4-2.55,8.53,8.53,0,0,1,4.68-1.5l.88-4.17h0a.37.37,0,0,1,.45-.29h0l3,.59A1.2,1.2,0,1,1,18,6.59a1.2,1.2,0,0,1-2.22-.5L13.2,5.58l-.78,3.75A8.49,8.49,0,0,1,17,10.83a1.74,1.74,0,1,1,2,2.81Z"></path><path d="M14.76,12a1.2,1.2,0,1,0,0,2.4,1.23,1.23,0,0,0,0-2.4"></path></g></g></svg>
+<a target="_blank" rel="noopener nofollow" href="https://github.com/DEXZBITZ" class="footer__link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="23.28" viewBox="0 0 24 23.28" class="footer__logo"><g><path d="M11.93.36A12,12,0,0,0,0,12.28,12.05,12.05,0,0,0,8.2,23.61c.6.15.74-.3.74-.59V20.93c-3.28.74-4-1.49-4-1.49a4.07,4.07,0,0,0-1.34-1.79c-1.05-.75.15-.75.15-.75a2.61,2.61,0,0,1,1.79,1.2,2.43,2.43,0,0,0,3.42,1,3.39,3.39,0,0,1,.75-1.64c-2.68-.3-5.37-1.34-5.37-6a4.25,4.25,0,0,1,1.2-3.13,3.71,3.71,0,0,1,.14-3.13s1-.3,3.28,1.19a9.61,9.61,0,0,1,3-.45,9.59,9.59,0,0,1,3,.45C17.14,5,18.19,5.28,18.19,5.28a4.54,4.54,0,0,1,.15,3.13,4.83,4.83,0,0,1,1.19,3.13c0,4.62-2.83,5.66-5.52,5.81a3.84,3.84,0,0,1,.9,2.39V23c0,.29.15.74.89.59A12.05,12.05,0,0,0,24,12.28,12.19,12.19,0,0,0,11.93.36Z" transform="translate(0-.36)" stroke="none"></path></g></svg>
+</script></a>
+</footer>
+
+</div>
+
+<div class="flash-message">
+<div class="centralize-wrapper">
+<div class="centralize-inner">
+<div class="centralize-content">
+<div class="flash-removable">
+<button type="button" class="close flash-close" aria-hidden="true">×</button>
+<div class="flash-icon"></div>
+<p>
+</p>
+<a class="flash-confirm hidden-flash-item btn btn-sm btn-info btn-flat" href="javascript:;">Confirm</a>
+<a class="flash-close hidden-flash-item btn btn-sm btn-warning btn-flat" href="javascript:;">Cancel</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="https://dexzbitz.live/js/app.js?t=RzrNFW7q9F"></script>
+<script src="https://dexzbitz.live/common/vendors/jquery-ui/jquery-ui.min.js"></script>
+<script src="https://dexzbitz.live/common/vendors/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://dexzbitz.live/common/vendors/iCheck/icheck.min.js"></script>
+<script src="https://dexzbitz.live/backend/assets/js/adminlte.min.js"></script>
+<script src="https://dexzbitz.live/backend/assets/js/custom.js"></script>
+<script src="https://dexzbitz.live/common/vendors/bcmath/libbcmath-min.js"></script>
+<script src="https://dexzbitz.live/common/vendors/bcmath/bcmath.js"></script>
+<script src="https://dexzbitz.live/common/vendors/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="https://dexzbitz.live/common/vendors/datatable_responsive/datatables/datatables.min.js"></script>
+<script src="https://dexzbitz.live/common/vendors/datatable_responsive/datatables/plugins/bootstrap/datatables.bootstrap.js"></script>
+<script src="https://dexzbitz.live/common/vendors/echart/echarts.min.js"></script>
+<script src="https://dexzbitz.live/js/chart.js"></script>
+<script src="https://dexzbitz.live/common/vendors/cvalidator/cvalidator.js"></script>
+<script>
+
+    let defaultBaseId = parseInt(1);
+    let defaultStockId = parseInt(11);
+    let defaultStockPairId = parseInt(16);
+    let defaultInterval = parseInt(240);
+    let defaultZoom = parseInt(20160);
+    let stockMarketTable = '';
+    let buyOrderTable = '';
+    let sellOrderTable = '';
+    let myOpenOrderTable = '';
+    let myTradeHistoryTable = '';
+    let tradeHistoryTable = '';
+    let exchangeTypeBuy = '1';
+    let exchangeTypeSell = '2';
+    let exchangeCategory = '1';
+    let exchangeType = JSON.parse('{"1":"Buy","2":"Sell"}');
+    let user = JSON.parse('null');
+    let orderCancelURL = 'https://dexzbitz.live/orders/##';
+    let chartData;
+    let sellOrderLastPrice = 0;
+    let buyOrderLastPrice = 0;
+    let orderBookRowPerPage = 50;
+    let sellOrderTableLoadMore = true;
+    let buyOrderTableLoadMore = true;
+
+    bcscale(8);
+
+    $(document).ready(function () {
+
+
+        $('#buy_order_form').cValidate({
+            showErrorsInFlash: true,
+            preventSubmit: true
+        });
+
+        $('#sell_order_form').cValidate({
+            showErrorsInFlash: true,
+            preventSubmit: true
+        });
+
+        $('#stop_limit_form').cValidate({
+            showErrorsInFlash: true,
+            preventSubmit: true
+        });
+
+
+        stockMarketTable = $('#stock_market_table').DataTable({
+            destroy: true,
+            paging: false,
+            order: [[0, 'asc']],
+            dom: '<"filter">ft',
+            select: {
+                style: 'single',
+                selector: 'tr:not(.selected)'
+            },
+            scrollY: 500,
+            scrollCollapse: true,
+            language: {search: "", searchPlaceholder: "Search..."},
+            ajax: {
+                url: 'https://dexzbitz.live/exchange/get-coin-market',
+                dataSrc: function (json) {
+
+                    if (json.baseItems) {
+                        let html = '<select id="datatable-filter" class="form-control">';
+
+                        $.each(json.baseItems, function (baseId, baseItem) {
+                            let selected = defaultBaseId == baseId ? "selected" : "";
+                            html += '<option ' + selected + ' value="' + baseId + '">' + baseItem + '</option>';
+                        });
+                        html += '</select>';
+
+                        $("div.filter").html(html);
+                    }
+                    return json.stockItems;
+                }
+            },
+            initComplete: function () {
+                stockMarketTable.column(4).search(defaultBaseId).draw();
+                let selectedRowData = stockMarketTable.row({selected: true}).data();
+                updateStockPairSummary(selectedRowData);
+                                initStockChart(defaultStockPairId, defaultInterval);
+                initBuyStockOrderTable();
+                initSellStockOrderTable();
+                initTradeHistoryTable();
+                broadcast();
+            },
+            rowCallback: function (row, data) {
+                if (data.id == defaultStockPairId) {
+                    stockMarketTable.row(row).select();
+                    changeUrl(data);
+                }
+
+                $(row).attr('id', 'stock_market' + data.id);
+            },
+            columns: [
+                {
+                    data: "stock_item_abbr",
+                },
+                {
+                    data: "last_price",
+                },
+                {
+                    data: "exchanged_base_item_volume_24",
+                    render: function (data) {
+                        return number_format(data, 3)
+                    }
+                },
+                {
+                    data: "change_24",
+                    render: function (data) {
+                        let change = '';
+                        if (parseFloat(data) > 0) {
+                            change = '<i class="fa fa-caret-up text-green"></i> ';
+                        } else if (parseFloat(data) < 0) {
+                            change = '<i class="fa fa-caret-down text-red"></i> ';
+                        } else {
+                            change = '<i class="fa fa-sort text-gray"></i> ';
+                        }
+                        return change + number_format(Math.abs(data), 2);
+                    }
+                },
+                {
+                    data: "base_item_id",
+                    visible: false
+                }
+            ]
+        });
+
+        $(document).on('change', '#datatable-filter', function () {
+            stockMarketTable.column(4).search(this.value).draw();
+        });
+
+        stockMarketTable.on('user-select', function (e, dt, type, cell, originalEvent) {
+            if ( type === 'row') {
+                let row = dt.row(originalEvent.currentTarget);
+                let data = row.data();
+
+                defaultStockPairId = data.id;
+                defaultStockId = data.stock_item_id;
+                defaultBaseId = data.base_item_id;
+                changeUrl(data);
+                updateStockPairSummary(data);
+                initOrderForm();
+                initStockChart(defaultStockPairId, defaultInterval);
+                initBuyStockOrderTable();
+                initSellStockOrderTable();
+                initMyOpenOrderTable();
+                initMyTradeHistoryTable();
+                initTradeHistoryTable();
+                broadcast();
+            }
+        });
+
+        $(document).on('click', '#buy_order_table tbody:first tr', function () {
+            let data = buyOrderTable.row(this).data();
+            fillUpSellOrderForm(data);
+        });
+
+        $(document).on('click', '#sell_order_table tbody:first tr', function () {
+            let data = sellOrderTable.row(this).data();
+            fillUpBuyOrderForm(data);
+        });
+
+        $(document).on('click', '.base_item_balance, .lowest_ask, .stock_item_balance, .highest_bid', function (event) {
+            let selector = '#' + $(this).closest('.box').find('form').attr('id');
+            let value = $(this).text();
+
+            if ($(this).hasClass('base_item_balance')) {
+                $(selector + ' .total').val(value);
+                event.target.classList.add('total');
+            } else if ($(this).hasClass('stock_item_balance')) {
+                $(selector + ' .amount').val(value);
+                event.target.classList.add('amount');
+            } else {
+                $(selector + ' .price').val(value);
+                event.target.classList.add('price');
+            }
+
+            calculateOrderForm(event, value, selector);
+        });
+
+        $(document).on('keyup', '.price, .amount, .total', function (event) {
+            let selector = '#' + $(this).closest('form').attr('id');
+            calculateOrderForm(event, $(this).val(), selector);
+        });
+
+        $(document).on('click', '.delete_order', function (event) {
+            event.preventDefault();
+            let token = $('meta[name="csrf-token"]').attr('content');
+            let $this = $(this);
+            let url = $this.attr('href');
+            $this.closest('td').html('<span class="text-red">Cancelling</span>');
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {_token: token,_method : 'DELETE'},
+                success: function () {
+
+                }
+            });
+        });
+
+        $(document).on('click', '#candlestick li a', function (event) {
+            defaultInterval = $(this).data('interval') || 240;
+            $('#candlestick li').removeClass('disabled');
+            $(this).closest('li').addClass('disabled');
+            initStockChart(defaultStockPairId, defaultInterval);
+            updateChartZoom();
+        });
+
+        $(document).on('click', '#candlestick_zoom li a', function (event) {
+            $('#candlestick_zoom li').removeClass('disabled');
+            $(this).closest('li').addClass('disabled');
+            defaultZoom = parseInt($(this).data('zoom'));
+            updateChartZoom();
+        });
+
+        // Stock Market Toggling
+        $('#fixed-stock-market-toggler').on('click', function () {
+            var $this = $(this);
+            if ($this.hasClass('opened')) {
+                $this.removeClass('opened')
+                $('#fixed-stock-market').removeClass('opened')
+            } else {
+                $this.addClass('opened')
+                $('#fixed-stock-market').addClass('opened')
+            }
+        });
+
+        $(document).on('click', function (e) {
+            if ($(e.target).closest("#fixed-stock-market").length === 0) {
+                $('#fixed-stock-market-toggler').removeClass('opened');
+                $('#fixed-stock-market').removeClass('opened');
+            }
+
+        });
+    });
+</script>
+<script>
+
+    function broadcast() {
+        let channelPrefix = 'dexzbitz_';
+        Echo.channel(channelPrefix + 'orders.' + defaultStockPairId).listen('Exchange.BroadcastOrder', (data) => {
+            processOrderTable(data);
+        }).listen('Exchange.BroadcastCancelOrder', (data) => {
+            processOrderTable(data);
+        });
+
+        if (user) {
+            Echo.private(channelPrefix + 'orders.' + defaultStockPairId + '.' + user.id).listen('Exchange.BroadcastPrivateOrder', (data) => {
+                updateMyOpenOrderTable(data);
+                updateOrderFormOnOrderPlace(data);
+            }).listen('Exchange.BroadcastPrivateCancelOrder', (data) => {
+                updateMyOpenOrderTable(data);
+                updateOrderFormOnCancel(data);
+            });
+        }
+
+
+        Echo.channel(channelPrefix + 'exchange.' + defaultStockPairId).listen('Exchange.BroadcastStockExchange', (data) => {
+
+            $.each(data.exchangedOrders[exchangeTypeBuy], function (_, buy) {
+                if (buy) {
+                    updateOrdersBook(buyOrderTable, buy);
+                    updateOrderBookTotal($('#total_buy_order_in_base'), buy.total);
+                    if (buy.is_maker) {
+                        buy.amount = bcmul(buy.amount, '-1');
+                        buy.total = bcmul(buy.total, '-1');
+                        updateTradeHistory(tradeHistoryTable, buy);
+                    }
+                }
+            });
+
+            $.each(data.exchangedOrders[exchangeTypeSell], function (_, sell) {
+                if (sell) {
+                    updateOrdersBook(sellOrderTable, sell);
+                    updateOrderBookTotal($('#total_sell_order_in_item'), sell.amount);
+                    if (sell.is_maker) {
+                        sell.amount = bcmul(sell.amount, '-1');
+                        sell.total = bcmul(sell.total, '-1');
+                        updateTradeHistory(tradeHistoryTable, sell);
+                    }
+                }
+
+            });
+
+            updateChart(data.chartData);
+            updateStockPairSummary(data.stockPairSummary)
+        }).listen('Exchange.BroadcastSettlementOrders', (data) => {
+            let table = sellOrderTable;
+            let removeAmount = data.amount;
+
+            if (data.exchange_type == exchangeTypeBuy) {
+                table = buyOrderTable;
+                removeAmount = data.total;
+            }
+            updateOrdersBook(table, data);
+            updateOrderBookTotal($('#total_sell_order_in_item'), removeAmount);
+        });
+
+        Echo.channel(channelPrefix + 'exchange').listen('Exchange.BroadcastStockPairSummary', (data) => {
+            updateStockMarketTable(data);
+        });
+
+        if (user) {
+            Echo.private(channelPrefix + 'exchange.' + defaultStockPairId + '.' + user.id).listen('Exchange.BroadcastPrivateStockExchange', (data) => {
+                $.each(data, function (_, order) {
+                    if (order) {
+                        updateMyOpenOrderTable(order);
+                        updateMyTradeHisty(order);
+                        updateOrderFormOnExchange(order);
+                    }
+                });
+            }).listen('Exchange.BroadcastPrivateSettlementOrder', (data) => {
+                $.each(data, function (_, order) {
+                    if (order) {
+                        updateMyOpenOrderTable(order);
+                    }
+                });
+            });
+
+
+        }
+    }
+</script>
+<script>
+    function updateChartZoom() {
+        let zoom = calculateZoom();
+
+        eChart.setOption({
+            dataZoom: [
+                {
+                    start: zoom
+                },
+                {
+                    start: zoom
+                }
+            ]
+        });
+    }
+
+    function updateStockMarketTable(data) {
+        let row = stockMarketTable.row('#stock_market' + data.stock_pair_id);
+        let rowData = row.data();
+
+        if (rowData) {
+            let status = 'updated';
+
+            if (rowData.last_price > data.last_price) {
+                status = 'deleted';
+            } else if (rowData.last_price < data.last_price) {
+                status = 'inserted'
+            }
+
+            rowData.last_price = data.last_price;
+            rowData.exchanged_base_item_volume_24 = data.exchanged_base_item_volume_24;
+            rowData.change_24 = number_format(data.change_24, 2);
+            row.data(rowData).invalidate();
+            rowHighlight(row.node(), status);
+            stockMarketTable.draw();
+        }
+    }
+
+    function processOrderTable(data) {
+        let selector, table, total;
+
+        if (data.exchange_type == exchangeTypeBuy) {
+            table = buyOrderTable;
+            selector = $('#total_buy_order_in_base');
+            total = data.order.total;
+        } else {
+            table = sellOrderTable;
+            selector = $('#total_sell_order_in_item');
+            total = data.order.amount;
+        }
+
+        updateOrdersBook(table, data.order);
+        updateOrderBookTotal(selector, total);
+    }
+
+    function updateMyOpenOrderTable(data) {
+        let row = myOpenOrderTable.row("#" + data.order_number);
+        let rowData = row.data();
+
+        if (rowData) {
+            rowData.amount = bcsub(rowData.amount, data.amount);
+            if (rowData.amount > 0) {
+                row.data(rowData).invalidate();
+                rowHighlight(row.node(), 'updated');
+            } else {
+                myOpenOrderTable.rows(row).remove();
+            }
+        } else {
+            let row = myOpenOrderTable.row.add(data).node();
+            rowHighlight(row, 'inserted');
+        }
+
+        myOpenOrderTable.draw();
+    }
+
+    function calculateOrderForm(event, value, selector) {
+        if (event.target.classList.contains('price')) {
+
+            let amount = $(selector + ' .amount').val() || '0';
+            let total = bcmul(amount, value);
+            total = isNaN(total) ? 0 : total;
+            $(selector + ' .total').val(total);
+
+        } else if (event.target.classList.contains('amount')) {
+
+            let price = $(selector + ' .price').val() || '0';
+            let total = bcmul(price, value);
+            total = isNaN(total) ? 0 : total;
+            $(selector + ' .total').val(total);
+        } else {
+            let price = $(selector + ' .price').val() || '0';
+            let amount = bcdiv(value, price);
+
+            amount = isNaN(amount) ? 0 : amount;
+
+            $(selector + ' .amount').val(amount);
+        }
+    }
+
+    function initOrderForm() {
+
+        $('.stock-pair').val(defaultStockPairId);
+
+        $.ajax({
+            type: 'GET',
+            url: 'https://dexzbitz.live/exchange/get-wallet-summary',
+            data: {stock_pair_id: defaultStockPairId},
+            success: function (data) {
+                $('.base_item_balance').text(number_format(data.base_item_balance));
+                $('.stock_item_balance').text(number_format(data.stock_item_balance));
+
+                $('#buy_order_form .amount').val('');
+                $('#buy_order_form .total').val('');
+
+                $('#sell_order_form .amount').val('');
+                $('#sell_order_form .total').val('');
+            }
+        });
+    }
+
+    function fillUpSellOrderForm(data) {
+        $('#sell_order_form .price').val(data.price);
+        $('#sell_order_form .amount').val(data.total_stock_item);
+        $('#sell_order_form .total').val(data.total_base_item);
+
+        $('#buy_order_form .price').val(data.price);
+        $('#buy_order_form .amount').val('');
+        $('#buy_order_form .total').val('');
+    }
+
+    function fillUpBuyOrderForm(data) {
+        $('#buy_order_form .price').val(data.price);
+        $('#buy_order_form .amount').val(data.total_stock_item);
+        $('#buy_order_form .total').val(data.total_base_item);
+
+        $('#sell_order_form .price').val(data.price);
+        $('#sell_order_form .amount').val('');
+        $('#sell_order_form .total').val('');
+
+
+    }
+
+
+    function updateChart(data) {
+        let lastChartData = chartData.slice(-1)[0];
+        let intervalDate = data.interval[defaultInterval];
+
+        if (lastChartData[0] == intervalDate) {
+            lastChartData[2] = data.price;
+
+            if (lastChartData[1] == 0) {
+                lastChartData[1] = data.price;
+            }
+
+            if (lastChartData[3] > data.price || lastChartData[3] == 0) {
+                lastChartData[3] = data.price;
+            }
+
+            if (lastChartData[4] < data.price) {
+                lastChartData[4] = data.price;
+            }
+        } else {
+            chartData.push([
+                data.date,
+                data.price,
+                data.price,
+                data.price,
+                data.price,
+            ])
+        }
+
+        makeChart(document.getElementById('echart'), chartData)
+
+    }
+
+
+    function updateTradeHistory(table, data) {
+        let row = table.row.add(data).node();
+        rowHighlight(row, 'inserted');
+        table.draw();
+    }
+
+    function updateMyTradeHisty(data) {
+        myTradeHistoryTable.row.add(data);
+        myTradeHistoryTable.draw();
+    }
+
+    function updateOrdersBook(table, data) {
+        let row = table.row("#" + hash(data.price));
+        let rowData = row.data();
+
+        if (rowData) {
+            rowData.amount = bcadd(rowData.amount, data.amount);
+            rowData.total = bcadd(rowData.total, data.total);
+            if (rowData.amount > 0) {
+                row.data(rowData).invalidate();
+                rowHighlight(row.node(), 'updated');
+            } else {
+                table.rows(row).remove();
+            }
+
+            table.draw();
+
+        } else {
+            row = table.row.add(data).draw().node();
+            rowHighlight(row, 'inserted');
+        }
+    }
+
+    function updateOrderBookTotal(selector, total) {
+        let grandTotal = bcadd(selector.text(), total);
+        selector.text(grandTotal);
+    }
+
+
+    function updateStockPairSummary(data) {
+        $('#last_price').text(number_format(data.last_price));
+        let change = '';
+        if (parseFloat(data.change_24) > 0) {
+            change = '<i class="fa fa-caret-up text-green"></i> ';
+        } else if (parseFloat(data.change_24) < 0) {
+            change = '<i class="fa fa-caret-down text-red"></i> ';
+        } else {
+            change = '<i class="fa fa-sort text-gray"></i> ';
+        }
+
+        $('#_24_hour_percentage').html(change + ' ' + number_format(Math.abs(data.change_24), 2) + '%');
+        $('#_24_hour_high').text(number_format(data.high_24));
+        $('#_24_hour_low').text(number_format(data.low_24));
+
+        $('#_24_hour_base_volume').text(number_format(data.exchanged_base_item_volume_24, 3));
+        $('#_24_hour_item_volume').text(number_format(data.exchanged_stock_item_volume_24, 3));
+
+        if (data.base_item_abbr) {
+            $('.base_item').text(data.base_item_abbr);
+        }
+
+        if (data.stock_item_abbr) {
+            $('.stock_item').text(data.stock_item_abbr);
+        }
+
+    }
+
+    function number_format(number, decimalPoint = 8) {
+        number = parseFloat(number);
+        return number.toFixed(decimalPoint);
+    }
+
+    function initStockChart(stockPairId, interval) {
+        $.ajax({
+            type: 'GET',
+            url: 'https://dexzbitz.live/exchange/get-chart-data',
+            data: {stock_pair_id: stockPairId, interval: interval},
+            success: function (data) {
+                chartData = data;
+                makeChart(document.getElementById('echart'), chartData);
+                $(window).resize(function () {
+                    eChart.resize();
+                })
+            }
+        });
+    }
+
+    function hash(number) {
+        number = number_format(number);
+        let res = number.replace(/[0-9]|\./gi, function myFunction(x) {
+            if (x == 0) {
+                return 'z';
+            } else if (x == 1) {
+                return 'o';
+            } else if (x == 2) {
+                return 't';
+            } else if (x == 3) {
+                return 'r';
+            } else if (x == 4) {
+                return 'f';
+            } else if (x == 5) {
+                return 'i';
+            } else if (x == 6) {
+                return 's';
+            } else if (x == 7) {
+                return 'e';
+            } else if (x == 8) {
+                return 'g';
+            } else if (x == 9) {
+                return 'n';
+            } else {
+                return 'x';
+            }
+
+
+        });
+
+        return res;
+    }
+
+    function initBuyStockOrderTable() {
+        buyOrderTable = $('#buy_order_table').DataTable({
+            destroy: true,
+            order: [[0, 'desc']],
+            paging: false,
+            searching: false,
+            info: false,
+            scrollY: 385,
+            ajax: {
+                url: 'https://dexzbitz.live/exchange/get-orders',
+                data: {
+                    stock_pair_id: defaultStockPairId,
+                    last_price: null,
+                    exchange_type: exchangeTypeBuy,
+                    exchange_category: exchangeCategory
+                },
+                dataSrc: function (data) {
+                    let baseItemTotal = data.totalStockOrder.base_total || 0;
+                    $('#total_buy_order_in_base').text(number_format(baseItemTotal));
+                    return data.stockOrders;
+                }
+            },
+            language: {
+                sLoadingRecords: '<span style="width:100%;"><img src="https://dexzbitz.live/common/images/loader.svg"></span>'
+            },
+            drawCallback: function () {
+                let api = this.api();
+
+                let totalBaseItem = '0';
+                let totalStockItem = '0';
+                let heightBid = 0;
+                let rowCount = 0;
+                api.rows().every(function (rowId) {
+                    let data = this.data();
+
+                    if (rowId == 0) {
+                        heightBid = data.price;
+
+                    }
+
+                    totalStockItem = bcadd(totalStockItem, data.amount);
+                    totalBaseItem = bcmul(totalStockItem, data.price);
+
+                    data.total_stock_item = number_format(totalStockItem);
+                    data.total_base_item = number_format(totalBaseItem);
+
+                    this.data(data);
+
+                    rowCount++
+                });
+
+                $('.highest_bid').text(number_format(heightBid));
+                $('#sell_order_form .price').val(number_format(heightBid));
+
+                //Load more option
+                if (rowCount > orderBookRowPerPage) {
+                    if ($('#buy_order_load_more').length == 0 && buyOrderTableLoadMore) {
+                        let tbody = '<tbody id="buy_order_load_more">' +
+                            '<tr style="background-color: #a3ddd7">' +
+                            '<td colspan="4"><a onClick="loadMoreData(' + exchangeTypeBuy + ')" style="color:#08534c;float:right" href="javascript:;">Load 50 more</a></td>' +
+                            '</tr>' +
+                            '</tbody>';
+                        $('#buy_order_table').append(tbody);
+                    } else {
+                        $('#buy_order_load_more').remove();
+                    }
+                } else {
+                    if ($('#buy_order_load_more').length == 1) {
+                        $('#buy_order_load_more').remove();
+                    }
+                }
+            },
+            createdRow: function (row, data) {
+                $(row).attr('id', hash(data.price));
+            },
+            columns: [
+                {
+                    data: 'price',
+                    orderable: false,
+
+                },
+                {
+                    data: "amount",
+                    orderable: false,
+                },
+                {
+                    data: 'total',
+                    orderable: false,
+                },
+                {
+                    data: 'total_base_item',
+                    orderable: false,
+                    className: 'hide_in_mobile_small',
+                    render: function (data) {
+                        return number_format(data);
+                    }
+                }
+            ]
+        });
+
+    }
+
+    function initSellStockOrderTable() {
+        sellOrderTable = $('#sell_order_table').DataTable({
+            destroy: true,
+            paging: false,
+            order: [[0, 'asc']],
+            searching: false,
+            info: false,
+            scrollY: 385,
+            ajax: {
+                url: 'https://dexzbitz.live/exchange/get-orders',
+                data: {
+                    stock_pair_id: defaultStockPairId,
+                    last_price: null,
+                    exchange_type: exchangeTypeSell,
+                    exchange_category: exchangeCategory
+                },
+                dataSrc: function (data) {
+                    let stockItemTotal = data.totalStockOrder.item_total || 0;
+                    $('#total_sell_order_in_item').text(number_format(stockItemTotal));
+                    return data.stockOrders;
+                }
+            },
+            language: {
+                sLoadingRecords: '<span style="width:100%;"><img src="https://dexzbitz.live/common/images/loader.svg"></span>'
+            },
+            drawCallback: function () {
+                let api = this.api();
+
+                let totalStockItem = '0';
+                let totalBaseItem = '0';
+                let lowestAsk = 0;
+                let rowCount = 0;
+                api.rows().every(function (rowId) {
+                    let data = this.data();
+
+                    if (rowId == 0) {
+                        lowestAsk = data.price;
+                    }
+
+                    totalStockItem = bcadd(totalStockItem, data.amount);
+                    totalBaseItem = bcmul(totalStockItem, data.price);
+
+                    data.total_stock_item = number_format(totalStockItem);
+                    data.total_base_item = number_format(totalBaseItem);
+                    this.data(data);
+                    rowCount++;
+                    sellOrderLastPrice = data.price;
+                });
+
+                $('.lowest_ask').text(number_format(lowestAsk));
+                $('#buy_order_form .price').val(number_format(lowestAsk));
+
+                //Load more option
+                if (rowCount > orderBookRowPerPage) {
+                    if ($('#sell_order_load_more').length == 0 && sellOrderTableLoadMore) {
+                        let tbody = '<tbody id="sell_order_load_more">' +
+                            '<tr style="background-color: #a3ddd7">' +
+                            '<td colspan="4"><a onClick="loadMoreData(' + exchangeTypeSell + ')" style="color:#08534c;float:right" href="javascript:;">Load 50 more</a></td>' +
+                            '</tr>' +
+                            '</tbody>';
+                        $('#sell_order_table').append(tbody);
+                    } else {
+                        $('#sell_order_load_more').remove();
+                    }
+                } else {
+                    if ($('#sell_order_load_more').length == 1) {
+                        $('#sell_order_load_more').remove();
+                    }
+                }
+
+
+            },
+            createdRow: function (row, data) {
+                $(row).attr('id', hash(data.price));
+            },
+            columns: [
+                {
+                    data: 'price',
+                    orderable: false,
+
+                },
+                {
+                    data: "amount",
+                    orderable: false,
+                },
+                {
+                    data: "total",
+                    orderable: false,
+                },
+                {
+                    data: 'total_base_item',
+                    orderable: false,
+                    className: 'hide_in_mobile_small',
+                    render: function (data) {
+                        return number_format(data);
+                    }
+                }
+            ]
+        });
+
+    }
+
+    function initMyOpenOrderTable() {
+        myOpenOrderTable = $('#my_open_order_table').DataTable({
+            destroy: true,
+            paging: false,
+            searching: false,
+            scrollY: 300,
+            scrollCollapse: true,
+            order: [[4, 'desc']],
+            info: false,
+            ajax: {
+                url: 'https://dexzbitz.live/exchange/get-my-open-order',
+                data: {
+                    stock_pair_id: defaultStockPairId
+                },
+                dataSrc: function (data) {
+                    return data;
+                }
+            },
+            language: {
+                sLoadingRecords: '<span style="width:100%;"><img src="https://dexzbitz.live/common/images/loader.svg"></span>'
+            },
+            createdRow: function (row, data) {
+                $(row).attr('id', data.order_number);
+            },
+            columns: [
+                {
+                    data: null,
+                    render: function (data) {
+                        let html = '<span class="text-red">' + exchangeType[data.exchange_type] + '</span>';
+                        if (data.exchange_type == exchangeTypeBuy) {
+                            html = '<span class="text-green">' + exchangeType[data.exchange_type] + '</span>'
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    data: "price",
+                },
+                {
+                    data: "amount"
+                },
+                {
+                    data: null,
+                    className: 'hide_in_mobile_small',
+                    render: function (data) {
+                        return bcmul(data.amount, data.price);
+                    }
+                },
+                {
+                    data: "date",
+                    className: 'hide_in_mobile'
+                },
+                {
+                    data: null,
+                    className: 'hide_in_mobile',
+                    render: function (data) {
+                        return data.stop_limit ? data.stop_limit : '-';
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data) {
+                        let url = orderCancelURL.replace('##', data.order_number);
+                        return '<a class="delete_order" href="' + url + '">Cancel</a>';
+
+                    }
+                }
+            ]
+        });
+
+    }
+
+    function initMyTradeHistoryTable() {
+        myTradeHistoryTable = $('#my_trade_table').DataTable({
+            destroy: true,
+            paging: false,
+            searching: false,
+            order: [[0, 'desc']],
+            info: false,
+            scrollY: 300,
+            scrollCollapse: true,
+            ajax: {
+                url: 'https://dexzbitz.live/exchange/get-my-trade',
+                data: {
+                    stock_pair_id: defaultStockPairId
+                },
+                dataSrc: function (data) {
+                    return data;
+                }
+            },
+            language: {
+                sLoadingRecords: '<span style="width:100%;"><img src="https://dexzbitz.live/common/images/loader.svg"></span>'
+            },
+            columns: [
+                {
+                    data: "date",
+                    orderable: false,
+                    className: 'hide_in_mobile'
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    render: function (data) {
+                        let html = '<span class="text-red">' + exchangeType[data.exchange_type] + '</span>';
+                        if (data.exchange_type == exchangeTypeBuy) {
+                            html = '<span class="text-green">' + exchangeType[data.exchange_type] + '</span>'
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    data: "price",
+                    orderable: false,
+                    className: 'dt-body-center'
+                },
+                {
+                    data: "amount",
+                    orderable: false,
+                    className: 'dt-body-center'
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    className: 'dt-body-center hide_in_mobile_small',
+                    render: function (data) {
+                        return bcmul(data.amount, data.price);
+                    }
+                }
+            ]
+        });
+
+    }
+
+    function initTradeHistoryTable() {
+        tradeHistoryTable = $('#trade_history_table').DataTable({
+            destroy: true,
+            paging: false,
+            searching: false,
+            order: [[0, 'desc']],
+            info: false,
+            scrollY: 300,
+            scrollCollapse: true,
+            ajax: {
+                url: 'https://dexzbitz.live/exchange/get-trade-histories',
+                data: {
+                    stock_pair_id: defaultStockPairId
+                },
+                dataSrc: function (data) {
+                    return data;
+                }
+            },
+            language: {
+                sLoadingRecords: '<span style="width:100%;"><img src="https://dexzbitz.live/common/images/loader.svg"></span>'
+            },
+            columns: [
+                {
+                    data: "date",
+                    orderable: false,
+                    className: 'hide_in_mobile'
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    render: function (data) {
+                        let html = '<span class="text-red">' + exchangeType[data.exchange_type] + '</span>';
+                        if (data.exchange_type == exchangeTypeBuy) {
+                            html = '<span class="text-green">' + exchangeType[data.exchange_type] + '</span>'
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    data: "price",
+                    orderable: false,
+                    className: 'dt-body-center'
+                },
+                {
+                    data: "amount",
+                    orderable: false,
+                    className: 'dt-body-center'
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    className: 'dt-body-center hide_in_mobile_small',
+                    render: function (data) {
+                        return bcmul(data.amount, data.price);
+                    }
+                }
+            ]
+        });
+
+        initScroller();
+    }
+
+    function rowHighlight(row, className, animationTime = 1000) {
+        $(row).addClass(className);
+        setTimeout(autoTransition, animationTime);
+
+        function autoTransition() {
+            $(row).removeClass(className);
+        }
+    }
+
+    function initScroller() {
+        $(".dataTables_scrollBody").mCustomScrollbar("destroy");
+        $(".dataTables_scrollBody").mCustomScrollbar({
+            axis: "y",
+            theme: "dark-thick",
+        });
+    }
+
+    function loadMoreData(exchangeType) {
+
+        let lastPrice = sellOrderLastPrice;
+        let table = sellOrderTable;
+        let loadMore = sellOrderTableLoadMore;
+        if (exchangeType == exchangeTypeBuy) {
+            lastPrice = buyOrderLastPrice;
+            table = buyOrderTable;
+            loadMore = buyOrderTableLoadMore;
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: 'https://dexzbitz.live/exchange/get-orders',
+            data: {
+                stock_pair_id: defaultStockPairId,
+                exchange_type: exchangeType,
+                exchange_category: exchangeCategory,
+                last_price: lastPrice
+            },
+            success: function (data) {
+                let length = data.stockOrders.length;
+                if (length) {
+
+                    if (length < orderBookRowPerPage) {
+                        loadMore = false;
+                    }
+
+                    table.rows.add(data.stockOrders);
+                    table.draw();
+
+                }
+            }
+        });
+    }
+
+    function updateOrderFormOnCancel(data) {
+        if (data.exchange_type == exchangeTypeBuy) {
+            let baseItemBalance = $('.base_item_balance').first().text();
+            baseItemBalance = bcadd(baseItemBalance, data.total);
+            $('.base_item_balance').text(baseItemBalance);
+        } else {
+            let stockItemBalance = $('.stock_item_balance').first().text();
+            stockItemBalance = bcadd(stockItemBalance, data.amount);
+            $('.stock_item_balance').text(stockItemBalance);
+        }
+    }
+
+    function updateOrderFormOnOrderPlace(data) {
+        if (data.exchange_type == exchangeTypeBuy) {
+            let baseItemBalance = $('.base_item_balance').first().text();
+            baseItemBalance = bcsub(baseItemBalance, data.total);
+            $('.base_item_balance').text(baseItemBalance);
+        } else {
+            let stockItemBalance = $('.stock_item_balance').first().text();
+            stockItemBalance = bcsub(stockItemBalance, data.amount);
+            $('.stock_item_balance').text(stockItemBalance);
+        }
+    }
+
+    function updateOrderFormOnExchange(data) {
+        if (data.exchange_type == exchangeTypeBuy) {
+            let stockItemBalance = $('.stock_item_balance').first().text();
+            stockItemBalance = bcadd(stockItemBalance, bcsub(data.amount, data.fee));
+            $('.stock_item_balance').text(stockItemBalance);
+        } else {
+            let baseItemBalance = $('.base_item_balance').first().text();
+            baseItemBalance = bcadd(baseItemBalance, bcsub(data.total, data.fee));
+            $('.base_item_balance').text(baseItemBalance);
+        }
+    }
+
+    function changeUrl(data) {
+        let url = "https://dexzbitz.live/exchange/" + (data.stock_item_abbr + "-" + data.base_item_abbr).toLowerCase();
+        window.history.pushState({}, null, url);
+    }
+
+</script>
+</body>
+</html>
